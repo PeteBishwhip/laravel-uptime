@@ -1,61 +1,314 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Uptime Monitor
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive uptime monitoring application built with Laravel 12 and the TALL stack (Tailwind CSS, Alpine.js, Livewire, Laravel). This application provides multi-tenant website monitoring with support for HTTP pings, heartbeats, SSL certificate monitoring, and more.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🎯 Core Monitoring Features
+- **HTTP Ping Monitoring** - Monitor website availability, response time, and status codes
+- **Heartbeat Monitoring** - Track application health via webhook callbacks
+- **SSL Certificate Monitoring** - Get alerts before certificates expire
+- **Keyword Monitoring** - Check for presence or absence of specific content
+- **Custom Check Intervals** - Configure monitoring frequency per monitor
+- **Response Time Tracking** - Monitor average response times
+- **Uptime Percentage** - Track 30-day uptime statistics
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 📊 Dashboard & UI
+- Beautiful, responsive dashboard with dark mode support
+- Real-time monitor status overview
+- Recent incidents timeline
+- Monitor management interface (create, edit, pause, delete)
+- Public status pages for each tenant
+- Visual uptime history with sparklines
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🏢 Multi-Tenancy
+- Full tenant isolation using Stancl Tenancy
+- Separate databases per tenant
+- Custom domains support
+- Tenant-specific configurations
 
-## Learning Laravel
+### 💳 Stripe Integration (Laravel Cashier)
+- Multiple subscription tiers (Free, Pro, Enterprise)
+- Usage-based billing
+- Secure payment processing
+- Subscription management
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🔒 Authentication & Security
+- Laravel Breeze authentication
+- Email verification
+- Password reset functionality
+- Session management
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### ✅ Testing
+- Comprehensive feature tests
+- Unit tests for monitoring services
+- Authentication test suite
+- 36+ passing tests
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Tech Stack
 
-## Laravel Sponsors
+- **Laravel 12** - Latest Laravel framework
+- **Livewire 3** - Dynamic reactive components
+- **Alpine.js** - Lightweight JavaScript framework
+- **Tailwind CSS v4** - Utility-first CSS framework
+- **Stancl Tenancy** - Multi-tenant architecture
+- **Laravel Cashier** - Stripe subscription management
+- **Guzzle HTTP** - HTTP client for monitoring
+- **SQLite/MySQL** - Database support
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
 
-### Premium Partners
+### Requirements
+- PHP 8.2 or higher
+- Composer
+- Node.js & NPM
+- SQLite or MySQL database
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Setup Steps
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/PeteBishwhip/laravel-uptime.git
+cd laravel-uptime
+```
+
+2. **Install PHP dependencies**
+```bash
+composer install
+```
+
+3. **Install JavaScript dependencies**
+```bash
+npm install
+```
+
+4. **Configure environment**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+5. **Configure database**
+Edit `.env` and set your database credentials:
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database.sqlite
+```
+
+Or for MySQL:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel_uptime
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+6. **Run migrations**
+```bash
+php artisan migrate
+```
+
+7. **Build assets**
+```bash
+npm run build
+```
+
+8. **Start the development server**
+```bash
+php artisan serve
+```
+
+Visit `http://localhost:8000` to access the application.
+
+## Usage
+
+### Creating Monitors
+
+1. **Register an account** at `/register`
+2. **Navigate to Monitors** from the dashboard
+3. **Click "Create Monitor"**
+4. **Choose monitor type:**
+   - **HTTP Ping** - Enter URL, method, expected status codes
+   - **Heartbeat** - Configure expected interval and grace period
+   - **SSL Certificate** - Enter HTTPS URL to monitor
+
+### Setting Up Heartbeat Monitoring
+
+For heartbeat monitors, send a POST request to:
+```
+POST https://your-domain.com/heartbeat/{monitor-id}
+```
+
+Example using curl:
+```bash
+curl -X POST https://your-domain.com/heartbeat/1
+```
+
+### Creating Status Pages
+
+1. Navigate to **Status Pages** in the dashboard
+2. Click **Create Status Page**
+3. Configure your page settings
+4. Add monitors to display
+5. Share the public URL: `https://your-domain.com/status/{slug}`
+
+### Running the Scheduler
+
+The monitoring checks run via Laravel's scheduler. Add this to your crontab:
+```bash
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Or run the scheduler in development:
+```bash
+php artisan schedule:work
+```
+
+### Queue Workers
+
+For production, run queue workers to process monitoring jobs:
+```bash
+php artisan queue:work
+```
+
+## Configuration
+
+### Monitor Types
+
+**HTTP Ping**
+- URL to monitor
+- HTTP method (GET, POST, etc.)
+- Expected status codes (200, 201, etc.)
+- Timeout duration
+- Optional keyword checking
+
+**Heartbeat**
+- Expected heartbeat interval
+- Grace period before marking as down
+- Webhook URL provided after creation
+
+**SSL Certificate**
+- HTTPS URL to monitor
+- Alert threshold (default: 30 days before expiry)
+
+### Check Intervals
+
+- Minimum: 30 seconds
+- Default: 60 seconds
+- Configurable per monitor
+
+## Testing
+
+Run the test suite:
+```bash
+php artisan test
+```
+
+Run specific test suites:
+```bash
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+```
+
+## API Endpoints
+
+### Heartbeat Endpoint
+```
+POST /heartbeat/{monitor}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Heartbeat recorded successfully",
+  "timestamp": "2025-10-06T10:00:00+00:00"
+}
+```
+
+### Public Status Page
+```
+GET /status/{slug}
+```
+
+Returns a public HTML page showing monitor statuses and incidents.
+
+## Multi-Tenancy
+
+This application uses domain-based tenancy. Each tenant can have:
+- Custom domain or subdomain
+- Isolated database
+- Independent monitors and configurations
+
+### Creating Tenants
+
+```php
+use App\Models\Tenant;
+
+$tenant = Tenant::create([
+    'name' => 'Acme Corp',
+    'email' => 'admin@acme.com',
+]);
+
+$tenant->domains()->create([
+    'domain' => 'acme.example.com',
+]);
+```
+
+## Stripe Integration
+
+### Setting Up Subscriptions
+
+1. Add Stripe keys to `.env`:
+```env
+STRIPE_KEY=your_stripe_publishable_key
+STRIPE_SECRET=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
+```
+
+2. Create products and prices in Stripe Dashboard
+
+3. Configure plans in your application
+
+## Development
+
+### Building Assets for Development
+```bash
+npm run dev
+```
+
+### Running in Watch Mode
+```bash
+php artisan serve &
+npm run dev &
+php artisan queue:work &
+php artisan schedule:work
+```
+
+Or use the built-in dev command:
+```bash
+composer run dev
+```
+
+## Deployment
+
+1. Set `APP_ENV=production` in `.env`
+2. Run `composer install --optimize-autoloader --no-dev`
+3. Run `npm run build`
+4. Run `php artisan optimize`
+5. Set up queue workers and cron jobs
+6. Configure your web server (Nginx/Apache)
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Support
+
+For issues, questions, or contributions, please open an issue on GitHub.
